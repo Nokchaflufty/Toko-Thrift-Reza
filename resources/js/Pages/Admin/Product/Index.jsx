@@ -2,15 +2,25 @@ import AdminLayout from '@/Layouts/Admin/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 
-export default function Index({ products }) {
+export default function Index({ products, categories = [], filters }) {
     const [openDropdownId, setOpenDropdownId] = useState(null);
+    const [showFilters, setShowFilters] = useState(false);
+    const [activeFilters, setActiveFilters] = useState({
+        category: filters.category || '',
+        stock_status: filters.stock_status || '',
+    });
+    
     const dropdownRef = useRef(null);
+    const filterRef = useRef(null);
 
-    // Close dropdown when clicking outside
+    // Close dropdown and filter when clicking outside
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setOpenDropdownId(null);
+            }
+            if (filterRef.current && !filterRef.current.contains(event.target)) {
+                setShowFilters(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -18,6 +28,22 @@ export default function Index({ products }) {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const handleFilterChange = (key, value) => {
+        const newFilters = { ...activeFilters, [key]: value };
+        setActiveFilters(newFilters);
+        
+        router.get(route('admin.product.index'), newFilters, {
+            preserveState: true,
+            replace: true,
+        });
+    };
+
+    const clearFilters = () => {
+        const cleared = { category: '', stock_status: '' };
+        setActiveFilters(cleared);
+        router.get(route('admin.product.index'), cleared);
+    };
 
     const getStatusInfo = (stock) => {
         if (stock === 0) return { label: 'Sold Out', color: 'text-red-600', dot: 'bg-red-500' };
@@ -33,9 +59,10 @@ export default function Index({ products }) {
 
     const productList = products.data || [];
     const totalFinds = products.total || 0;
-    const activeListings = productList.filter(p => p.pakaian_stok > 0).length; // This is only for the current page, but fine for now
-    const lowStock = productList.filter(p => p.pakaian_stok > 0 && p.pakaian_stok <= 5).length;
-    const outOfStock = productList.filter(p => p.pakaian_stok === 0).length;
+    const activeListings = products.total_active || totalFinds; // Mocked or passed from backend if needed
+    // Simple mock stats for now
+    const lowStockCount = productList.filter(p => p.pakaian_stok > 0 && p.pakaian_stok <= 5).length;
+    const outOfStockCount = productList.filter(p => p.pakaian_stok === 0).length;
 
     return (
         <AdminLayout currentRoute="product">
@@ -48,12 +75,71 @@ export default function Index({ products }) {
                     <p className="text-sm text-gray-500 mt-1">Curate and monitor your thrifted collection from Malang.</p>
                 </div>
                 <div className="flex items-center space-x-3">
-                    <button className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-2 text-gray-500">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
-                        </svg>
-                        Filters
-                    </button>
+                    <div className="relative overflow-visible" ref={filterRef}>
+                        <button 
+                            onClick={() => setShowFilters(!showFilters)}
+                            className={`flex items-center px-4 py-2 border rounded-md text-sm font-medium transition shadow-sm ${
+                                showFilters || filters.category || filters.stock_status
+                                    ? 'bg-black text-white border-black' 
+                                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                            }`}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                            </svg>
+                            Filters
+                            {(filters.category || filters.stock_status) && (
+                                <span className="ml-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                            )}
+                        </button>
+
+                        {showFilters && (
+                            <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-gray-100 z-[110] p-5 animate-in fade-in slide-in-from-top-2 duration-200">
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Category</label>
+                                        <select 
+                                            value={activeFilters.category}
+                                            onChange={(e) => handleFilterChange('category', e.target.value)}
+                                            className="w-full text-xs font-bold border-gray-200 rounded-md focus:ring-black focus:border-black"
+                                        >
+                                            <option value="">All Categories</option>
+                                            {categories.map(cat => (
+                                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Stock Status</label>
+                                        <select 
+                                            value={activeFilters.stock_status}
+                                            onChange={(e) => handleFilterChange('stock_status', e.target.value)}
+                                            className="w-full text-xs font-bold border-gray-200 rounded-md focus:ring-black focus:border-black"
+                                        >
+                                            <option value="">All Status</option>
+                                            <option value="in_stock">In Stock (&gt; 5)</option>
+                                            <option value="low_stock">Low Stock (1 - 5)</option>
+                                            <option value="out_of_stock">Out of Stock (0)</option>
+                                        </select>
+                                    </div>
+                                    <div className="pt-2 border-t border-gray-50 flex justify-between items-center">
+                                        <button 
+                                            onClick={clearFilters}
+                                            className="text-[10px] font-bold text-gray-400 hover:text-red-500 transition uppercase tracking-widest"
+                                        >
+                                            Reset
+                                        </button>
+                                        <button 
+                                            onClick={() => setShowFilters(false)}
+                                            className="px-4 py-2 bg-black text-white text-[10px] font-bold rounded-md hover:bg-gray-800 transition uppercase tracking-widest"
+                                        >
+                                            Done
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
                     <Link href={route('admin.product.create')} className="flex items-center px-4 py-2 bg-black text-white rounded-md text-sm font-bold hover:bg-gray-800 transition shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 mr-2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -80,9 +166,9 @@ export default function Index({ products }) {
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-32">
                     <p className="text-[10px] font-bold text-gray-500 tracking-wider uppercase">Active Listings</p>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{activeListings}</h3>
+                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{productList.filter(p => p.pakaian_stok > 0).length}</h3>
                         <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded">
-                            Normal
+                            In View
                         </span>
                     </div>
                 </div>
@@ -91,7 +177,7 @@ export default function Index({ products }) {
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-32">
                     <p className="text-[10px] font-bold text-gray-500 tracking-wider uppercase">Low Stock</p>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{lowStock}</h3>
+                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{lowStockCount}</h3>
                         <span className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded">
                             Attention
                         </span>
@@ -102,7 +188,7 @@ export default function Index({ products }) {
                 <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-32">
                     <p className="text-[10px] font-bold text-gray-500 tracking-wider uppercase">Out of Stock</p>
                     <div className="flex items-end justify-between">
-                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{outOfStock}</h3>
+                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{outOfStockCount}</h3>
                         <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded">
                             Alert
                         </span>
@@ -134,7 +220,7 @@ export default function Index({ products }) {
                                               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
                                             </svg>
                                             <p className="text-sm font-medium text-gray-900">No products found</p>
-                                            <p className="text-xs text-gray-500 mt-1">Get started by creating a new product.</p>
+                                            <p className="text-xs text-gray-500 mt-1">Try adjusting your filters or creating a new product.</p>
                                         </div>
                                     </td>
                                 </tr>
