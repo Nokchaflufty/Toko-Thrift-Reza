@@ -1,0 +1,245 @@
+import AdminLayout from '@/Layouts/Admin/AdminLayout';
+import { Head, Link, router } from '@inertiajs/react';
+import { useState, useEffect, useRef } from 'react';
+
+export default function Index({ products }) {
+    const [openDropdownId, setOpenDropdownId] = useState(null);
+    const dropdownRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setOpenDropdownId(null);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const getStatusInfo = (stock) => {
+        if (stock === 0) return { label: 'Sold Out', color: 'text-red-600', dot: 'bg-red-500' };
+        if (stock <= 5) return { label: 'Low Stock', color: 'text-orange-600', dot: 'bg-orange-500' };
+        return { label: 'In Stock', color: 'text-green-600', dot: 'bg-green-500' };
+    };
+
+    const handleDelete = (id) => {
+        if (confirm('Are you sure you want to delete this product?')) {
+            router.delete(route('admin.product.destroy', id));
+        }
+    };
+
+    const productList = products.data || [];
+    const totalFinds = products.total || 0;
+    const activeListings = productList.filter(p => p.pakaian_stok > 0).length; // This is only for the current page, but fine for now
+    const lowStock = productList.filter(p => p.pakaian_stok > 0 && p.pakaian_stok <= 5).length;
+    const outOfStock = productList.filter(p => p.pakaian_stok === 0).length;
+
+    return (
+        <AdminLayout currentRoute="product">
+            <Head title="Product Management" />
+
+            {/* Header Section */}
+            <div className="flex justify-between items-end mb-8">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Product Management</h2>
+                    <p className="text-sm text-gray-500 mt-1">Curate and monitor your thrifted collection from Malang.</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                    <button className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-2 text-gray-500">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                        </svg>
+                        Filters
+                    </button>
+                    <Link href={route('admin.product.create')} className="flex items-center px-4 py-2 bg-black text-white rounded-md text-sm font-bold hover:bg-gray-800 transition shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 mr-2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add New Product
+                    </Link>
+                </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                {/* Total Finds */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-32">
+                    <p className="text-[10px] font-bold text-gray-500 tracking-wider uppercase">Total Finds</p>
+                    <div className="flex items-end justify-between">
+                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{totalFinds}</h3>
+                        <span className="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded">
+                            Active
+                        </span>
+                    </div>
+                </div>
+
+                {/* Active Listings */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-32">
+                    <p className="text-[10px] font-bold text-gray-500 tracking-wider uppercase">Active Listings</p>
+                    <div className="flex items-end justify-between">
+                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{activeListings}</h3>
+                        <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded">
+                            Normal
+                        </span>
+                    </div>
+                </div>
+
+                {/* Low Stock */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-32">
+                    <p className="text-[10px] font-bold text-gray-500 tracking-wider uppercase">Low Stock</p>
+                    <div className="flex items-end justify-between">
+                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{lowStock}</h3>
+                        <span className="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded">
+                            Attention
+                        </span>
+                    </div>
+                </div>
+
+                {/* Out of Stock */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-32">
+                    <p className="text-[10px] font-bold text-gray-500 tracking-wider uppercase">Out of Stock</p>
+                    <div className="flex items-end justify-between">
+                        <h3 className="text-4xl font-extrabold text-gray-900 tracking-tight">{outOfStock}</h3>
+                        <span className="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-xs font-bold rounded">
+                            Alert
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Product Table */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible mb-8">
+                <div className="overflow-x-auto overflow-visible">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr>
+                                <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-200 w-2/5">Product</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-200">SKU</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-200">Category</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-200">Stock</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-200">Price</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-200">Status</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-200 text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 overflow-visible">
+                            {productList.length === 0 ? (
+                                <tr>
+                                    <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
+                                        <div className="flex flex-col items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-gray-300 mb-4">
+                                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                            </svg>
+                                            <p className="text-sm font-medium text-gray-900">No products found</p>
+                                            <p className="text-xs text-gray-500 mt-1">Get started by creating a new product.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                productList.map((product) => {
+                                    const status = getStatusInfo(product.pakaian_stok);
+                                    return (
+                                        <tr key={product.pakaian_id} className="hover:bg-gray-50/50 transition">
+                                            <td className="px-6 py-5">
+                                                <div className="flex items-center">
+                                                    <div className="w-14 h-14 rounded-md border border-gray-200 overflow-hidden flex-shrink-0 bg-gray-50">
+                                                        <img src={product.pakaian_gambar_url || 'https://placehold.co/100x100/eeeeee/black?text=Image'} alt={product.pakaian_nama} className="w-full h-full object-cover mix-blend-multiply" />
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <h4 className="text-sm font-bold text-gray-900 leading-tight">{product.pakaian_nama}</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-5">
+                                                <span className="text-xs font-mono text-gray-500">TKM-{product.pakaian_id.toString().padStart(3, '0')}</span>
+                                            </td>
+                                            <td className="px-6 py-5">
+                                                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                                                    {product.kategori_pakaian?.kategori_pakaian_nama || 'Uncategorized'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-5 text-sm font-medium text-gray-900">
+                                                {product.pakaian_stok} units
+                                            </td>
+                                            <td className="px-6 py-5">
+                                                <span className="text-xs font-bold text-gray-900 uppercase tracking-wide">Rp</span><br />
+                                                <span className="text-sm font-bold text-gray-900">{product.pakaian_harga}</span>
+                                            </td>
+                                            <td className="px-6 py-5">
+                                                <div className={`flex items-center text-xs font-bold ${status.color}`}>
+                                                    <div className={`w-1.5 h-1.5 rounded-full mr-2 ${status.dot}`}></div>
+                                                    {status.label}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-5 text-right">
+                                                <div className="flex justify-end items-center space-x-2">
+                                                    <Link 
+                                                        href={route('admin.product.edit', product.pakaian_id)}
+                                                        className="p-2 text-gray-400 hover:text-black hover:bg-gray-100 rounded-full transition-all"
+                                                        title="Edit Product"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                                        </svg>
+                                                    </Link>
+                                                    <button 
+                                                        onClick={() => handleDelete(product.pakaian_id)}
+                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all"
+                                                        title="Delete Product"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {/* Pagination Footer */}
+                <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-gray-50/50">
+                    <p className="text-xs font-medium text-gray-500">
+                        Showing {products.from || 0} to {products.to || 0} of {products.total} products
+                    </p>
+                    <div className="flex space-x-1">
+                        {products.links.map((link, i) => {
+                            const label = link.label
+                                .replace('&laquo; Previous', '')
+                                .replace('Next &raquo;', '')
+                                || (link.label.includes('Previous') ? '<' : '>');
+                                
+                            const isPrev = link.label.includes('Previous');
+                            const isNext = link.label.includes('Next');
+
+                            return (
+                                <Link
+                                    key={i}
+                                    href={link.url || '#'}
+                                    as="button"
+                                    disabled={!link.url}
+                                    className={`w-8 h-8 flex items-center justify-center rounded border text-xs font-bold transition ${
+                                        link.active 
+                                            ? 'border-black bg-black text-white' 
+                                            : link.url 
+                                                ? 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50' 
+                                                : 'border-gray-100 bg-white text-gray-300 cursor-not-allowed'
+                                    }`}
+                                    dangerouslySetInnerHTML={{ __html: link.label }}
+                                />
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
+        </AdminLayout>
+    );
+}
