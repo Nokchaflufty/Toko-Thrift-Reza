@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\KategoriPakaian;
+use App\Models\MetodePembayaran;
+use App\Models\Pembelian;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -32,5 +34,20 @@ class DatabaseSeeder extends Seeder
         foreach ($categories as $category) {
             KategoriPakaian::firstOrCreate(['kategori_pakaian_nama' => $category]);
         }
+
+        // Create default payment methods
+        if (MetodePembayaran::count() === 0) {
+            $admin = User::where('user_username', 'admin')->first();
+            $types = ['DANA', 'OVO', 'BCA', 'COD'];
+            foreach ($types as $type) {
+                MetodePembayaran::create([
+                    'metode_pembayaran_user_id' => $admin->user_id,
+                    'metode_pembayaran_jenis' => $type,
+                    'metode_pembayaran_nomor' => '1234567890'
+                ]);
+            }
+        }
+
+
     }
 }

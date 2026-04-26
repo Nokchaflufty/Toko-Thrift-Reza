@@ -12,5 +12,6 @@ class KategoriPakaian extends Model
 
     protected $fillable = [
         'kategori_pakaian_nama',
+        'kategori_pakaian_foto',
     ];
 }

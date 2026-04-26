@@ -10,6 +10,7 @@ export default function Form({ product, categories = [] }) {
         pakaian_kategori_pakaian_id: product?.pakaian_kategori_pakaian_id || '',
         pakaian_stok: product?.pakaian_stok || '',
         pakaian_harga: product?.pakaian_harga || '',
+        pakaian_deskripsi: product?.pakaian_deskripsi || '',
         pakaian_gambar_url: null, // For file upload
     });
 
@@ -136,6 +137,21 @@ export default function Form({ product, categories = [] }) {
                                 />
                             </div>
                             {errors.pakaian_harga && <p className="mt-1 text-xs text-red-600">{errors.pakaian_harga}</p>}
+                        </div>
+
+                        <div>
+                            <label htmlFor="pakaian_deskripsi" className="block text-[11px] font-bold text-gray-900 uppercase tracking-widest mb-2">
+                                Deskripsi
+                            </label>
+                            <textarea
+                                id="pakaian_deskripsi"
+                                rows="5"
+                                className="w-full rounded-md border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-black focus:ring-black placeholder-gray-400 resize-none"
+                                placeholder="Tuliskan detail pakaian, bahan, kondisi, dsb..."
+                                value={data.pakaian_deskripsi}
+                                onChange={(e) => setData('pakaian_deskripsi', e.target.value)}
+                            ></textarea>
+                            {errors.pakaian_deskripsi && <p className="mt-1 text-xs text-red-600">{errors.pakaian_deskripsi}</p>}
                         </div>
 
                         <div className="pt-6 flex items-center space-x-4">

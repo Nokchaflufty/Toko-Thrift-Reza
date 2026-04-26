@@ -20,6 +20,11 @@ class ProductController extends Controller
             $query->where('pakaian_kategori_pakaian_id', $request->category);
         }
 
+        // Search
+        if ($request->search) {
+            $query->where('pakaian_nama', 'like', '%' . $request->search . '%');
+        }
+
         // Filter by Stock Status
         if ($request->stock_status) {
             if ($request->stock_status === 'out_of_stock') {
@@ -68,6 +73,7 @@ class ProductController extends Controller
             'pakaian_kategori_pakaian_id' => 'required|integer|exists:kategori_pakaian,kategori_pakaian_id',
             'pakaian_stok' => 'required|string|max:100',
             'pakaian_harga' => 'required|string|max:255',
+            'pakaian_deskripsi' => 'nullable|string',
             'pakaian_gambar_url' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
@@ -82,6 +88,7 @@ class ProductController extends Controller
             'pakaian_kategori_pakaian_id' => $request->pakaian_kategori_pakaian_id,
             'pakaian_stok' => $request->pakaian_stok,
             'pakaian_harga' => $request->pakaian_harga,
+            'pakaian_deskripsi' => $request->pakaian_deskripsi,
             'pakaian_gambar_url' => $imagePath,
         ]);
 
@@ -113,6 +120,7 @@ class ProductController extends Controller
             'pakaian_kategori_pakaian_id' => 'required|integer|exists:kategori_pakaian,kategori_pakaian_id',
             'pakaian_stok' => 'required|string|max:100',
             'pakaian_harga' => 'required|string|max:255',
+            'pakaian_deskripsi' => 'nullable|string',
             'pakaian_gambar_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
@@ -121,6 +129,7 @@ class ProductController extends Controller
             'pakaian_kategori_pakaian_id' => $request->pakaian_kategori_pakaian_id,
             'pakaian_stok' => $request->pakaian_stok,
             'pakaian_harga' => $request->pakaian_harga,
+            'pakaian_deskripsi' => $request->pakaian_deskripsi,
         ];
 
         if ($request->hasFile('pakaian_gambar_url')) {

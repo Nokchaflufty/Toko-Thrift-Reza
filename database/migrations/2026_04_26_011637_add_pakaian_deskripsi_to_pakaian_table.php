@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kategori_pakaian', function (Blueprint $table) {
-            $table->increments('kategori_pakaian_id');
-            $table->string('kategori_pakaian_nama', 50);
-            $table->string('kategori_pakaian_foto')->nullable();
+        Schema::table('pakaian', function (Blueprint $table) {
+            $table->text('pakaian_deskripsi')->nullable()->after('pakaian_nama');
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kategori_pakaian');
+        Schema::table('pakaian', function (Blueprint $table) {
+            $table->dropColumn('pakaian_deskripsi');
+        });
     }
 };

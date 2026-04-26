@@ -74,7 +74,14 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
                     return (
                         <Link
                             key={item.name}
-                            href={item.id === 'dashboard' ? route('admin.dashboard') : (item.id === 'product' ? route('admin.product.index') : '#')}
+                            href={
+                                item.id === 'dashboard' ? route('admin.dashboard') : 
+                                item.id === 'product' ? route('admin.product.index') : 
+                                item.id === 'category' ? route('admin.category.index') : 
+                                item.id === 'transaction' ? route('admin.transaction.index') : 
+                                item.id === 'customers' ? route('admin.customer.index') : 
+                                item.id === 'settings' ? route('admin.settings') : '#'
+                            }
                             className={`flex items-center px-6 py-3.5 text-sm font-medium transition-colors ${
                                 isActive 
                                     ? 'bg-[#1a1a1a] text-white border-l-4 border-white' 
