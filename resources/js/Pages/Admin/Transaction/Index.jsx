@@ -79,7 +79,7 @@ export default function Index({ transactions, stats, filters }) {
                             className="text-xs font-bold border-none focus:ring-0 bg-transparent py-1.5 dark:text-white"
                         >
                             <option value="" className="dark:bg-black">{t('Year')}</option>
-                            {[2024, 2025, 2026].map(year => (
+                            {Array.from({ length: dayjs().year() - 2024 + 2 }, (_, i) => 2024 + i).map(year => (
                                 <option key={year} value={year} className="dark:bg-black">{year}</option>
                             ))}
                         </select>
