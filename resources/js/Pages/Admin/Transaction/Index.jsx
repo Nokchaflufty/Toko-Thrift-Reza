@@ -1,9 +1,11 @@
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { useLanguage } from '@/Utils/useLanguage';
 import dayjs from 'dayjs';
 
 export default function Index({ transactions, stats, filters }) {
+    const { t } = useLanguage();
     const [activeFilters, setActiveFilters] = useState({
         date: filters.date || '',
         month: filters.month || '',
@@ -42,11 +44,11 @@ export default function Index({ transactions, stats, filters }) {
 
     return (
         <AdminLayout currentRoute="transaction">
-            <Head title="Transactions" />
+            <Head title={t('Transactions')} />
 
             <div className="flex justify-between items-end mb-8">
                 <div>
-                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Transactions</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('Transactions')}</h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Oversee all customer ledger activities and payment reconciliations.</p>
                 </div>
                 
@@ -65,7 +67,7 @@ export default function Index({ transactions, stats, filters }) {
                             onChange={(e) => handleFilterChange('month', e.target.value)}
                             className="text-xs font-bold border-none focus:ring-0 bg-transparent py-1.5 dark:text-white"
                         >
-                            <option value="" className="dark:bg-black">Month</option>
+                            <option value="" className="dark:bg-black">{t('Month')}</option>
                             {Array.from({ length: 12 }, (_, i) => (
                                 <option key={i + 1} value={i + 1}>{dayjs().month(i).format('MMMM')}</option>
                             ))}
@@ -76,7 +78,7 @@ export default function Index({ transactions, stats, filters }) {
                             onChange={(e) => handleFilterChange('year', e.target.value)}
                             className="text-xs font-bold border-none focus:ring-0 bg-transparent py-1.5 dark:text-white"
                         >
-                            <option value="" className="dark:bg-black">Year</option>
+                            <option value="" className="dark:bg-black">{t('Year')}</option>
                             {[2024, 2025, 2026].map(year => (
                                 <option key={year} value={year} className="dark:bg-black">{year}</option>
                             ))}
@@ -127,18 +129,18 @@ export default function Index({ transactions, stats, filters }) {
             {/* Transaction Ledger Table */}
             <div className="bg-white dark:bg-black rounded-xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden mb-8 transition-colors">
                 <div className="px-6 py-4 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-gray-50/30 dark:bg-white/5">
-                    <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">Transaction Ledger</h3>
+                    <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">{t('Transactions')}</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/5">
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Transaction ID</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Customer</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Date</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Amount</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Status</th>
-                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-right">Action</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">TRANSACTION ID</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">CUSTOMER</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('TANGGAL')}</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('TOTAL')}</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">STATUS</th>
+                                <th className="px-6 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-right">{t('AKSI')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -190,7 +192,7 @@ export default function Index({ transactions, stats, filters }) {
                 {/* Pagination Footer */}
                 <div className="px-6 py-4 bg-gray-50/50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
                     <p className="text-xs font-medium text-gray-400 dark:text-gray-500">
-                        Showing {transactions.from || 0} to {transactions.to || 0} of {transactions.total || 0} entries
+                        {t('Showing')} {transactions.from || 0} {t('to')} {transactions.to || 0} {t('of')} {transactions.total || 0} {t('entries')}
                     </p>
                     <div className="flex space-x-1">
                         {transactions.links.map((link, i) => (
@@ -203,7 +205,7 @@ export default function Index({ transactions, stats, filters }) {
                                     link.active 
                                         ? 'border-black bg-black text-white dark:bg-white dark:text-black dark:border-white' 
                                         : link.url 
-                                            ? 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 dark:bg-black dark:text-gray-400 dark:border-white/10 dark:hover:bg-white/5' 
+                                            ? 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:bg-black dark:text-gray-400 dark:border-white/10 dark:hover:bg-white/5' 
                                             : 'border-gray-100 bg-white text-gray-300 dark:bg-black dark:text-gray-700 dark:border-white/5 cursor-not-allowed'
                                 }`}
                                 dangerouslySetInnerHTML={{ __html: link.label }}

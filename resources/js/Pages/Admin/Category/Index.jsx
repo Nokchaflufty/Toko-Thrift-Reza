@@ -124,6 +124,29 @@ export default function Index({ categories = [] }) {
                         </tbody>
                     </table>
                 </div>
+                <div className="px-6 py-4 bg-gray-50/50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                    <p className="text-xs font-medium text-gray-400 dark:text-gray-500">
+                        {t('Showing')} {categories.from || 0} {t('to')} {categories.to || 0} {t('of')} {categories.total || 0} {t('categories')}
+                    </p>
+                    <div className="flex space-x-1">
+                        {categories.links && categories.links.map((link, i) => (
+                            <Link
+                                key={i}
+                                href={link.url || '#'}
+                                as="button"
+                                disabled={!link.url}
+                                className={`px-3 py-1 border rounded text-xs font-bold transition ${
+                                    link.active 
+                                        ? 'border-black bg-black text-white dark:border-white dark:bg-white dark:text-black' 
+                                        : link.url 
+                                            ? 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 dark:bg-black dark:text-gray-400 dark:border-white/10 dark:hover:bg-white/5' 
+                                            : 'border-gray-100 bg-white text-gray-300 dark:bg-black dark:text-gray-700 dark:border-white/5 cursor-not-allowed'
+                                }`}
+                                dangerouslySetInnerHTML={{ __html: link.label }}
+                            />
+                        ))}
+                    </div>
+                </div>
             </div>
         </AdminLayout>
     );
