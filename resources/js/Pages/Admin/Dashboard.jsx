@@ -1,8 +1,11 @@
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
 import { Head, Link } from '@inertiajs/react';
 import dayjs from 'dayjs';
+import { useLanguage } from '@/Utils/useLanguage';
 
 export default function Dashboard({ stats, recentTransactions }) {
+    const { t } = useLanguage();
+    
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
@@ -13,7 +16,7 @@ export default function Dashboard({ stats, recentTransactions }) {
 
     const cards = [
         {
-            title: 'TOTAL PRODUK',
+            title: t('TOTAL PRODUK'),
             value: stats.total_products.toLocaleString(),
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -22,7 +25,7 @@ export default function Dashboard({ stats, recentTransactions }) {
             ),
         },
         {
-            title: 'TOTAL KATEGORI',
+            title: t('TOTAL KATEGORI'),
             value: stats.total_categories.toLocaleString(),
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -32,7 +35,7 @@ export default function Dashboard({ stats, recentTransactions }) {
             ),
         },
         {
-            title: 'TOTAL TRANSAKSI',
+            title: t('TOTAL TRANSAKSI'),
             value: stats.total_transactions.toLocaleString(),
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -41,7 +44,7 @@ export default function Dashboard({ stats, recentTransactions }) {
             ),
         },
         {
-            title: 'TOTAL PENGGUNA',
+            title: t('TOTAL PENGGUNA'),
             value: stats.total_users.toLocaleString(),
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -53,32 +56,32 @@ export default function Dashboard({ stats, recentTransactions }) {
 
     return (
         <AdminLayout currentRoute="dashboard">
-            <Head title="Dashboard Overview" />
+            <Head title={t('Overview')} />
 
             <div className="mb-8">
-                <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
-                <p className="text-sm text-gray-500 mt-1">Performance insights for Toko Thrift Malang</p>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('Overview')}</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('Performance insights for Toko Thrift Malang')}</p>
             </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {cards.map((card, index) => (
-                    <div key={index} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between h-36">
-                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center text-gray-900">
+                    <div key={index} className="bg-white dark:bg-black p-6 rounded-xl border border-gray-100 dark:border-white/5 shadow-sm flex flex-col justify-between h-36 transition-colors">
+                        <div className="w-10 h-10 bg-gray-50 dark:bg-white/5 rounded-lg flex items-center justify-center text-gray-900 dark:text-white">
                             {card.icon}
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{card.title}</p>
-                            <h3 className="text-2xl font-black text-gray-900 mt-1">{card.value}</h3>
+                            <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{card.title}</p>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white mt-1">{card.value}</h3>
                         </div>
                     </div>
                 ))}
             </div>
 
             {/* Recent Transactions Table */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="px-8 py-5 border-b border-gray-50 flex justify-between items-center">
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest">Recent Transactions</h3>
+            <div className="bg-white dark:bg-black rounded-xl border border-gray-100 dark:border-white/5 shadow-sm overflow-hidden transition-colors">
+                <div className="px-8 py-5 border-b border-gray-50 dark:border-white/5 flex justify-between items-center">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">{t('Recent Transactions')}</h3>
                     <div className="flex items-center space-x-3">
                         <button className="text-gray-400 hover:text-black">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -95,24 +98,24 @@ export default function Dashboard({ stats, recentTransactions }) {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="bg-gray-50/50">
-                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">NO.</th>
-                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">NAMA PENGGUNA</th>
-                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">TANGGAL</th>
-                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">TOTAL HARGA</th>
-                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">METODE PEMBAYARAN</th>
-                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">AKSI</th>
+                            <tr className="bg-gray-50/50 dark:bg-white/5">
+                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('NO.')}</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('NAMA PENGGUNA')}</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('TANGGAL')}</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('TOTAL HARGA')}</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('METODE PEMBAYARAN')}</th>
+                                <th className="px-8 py-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest text-right">{t('AKSI')}</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-50">
+                        <tbody className="divide-y divide-gray-50 dark:divide-white/5">
                             {recentTransactions.map((transaction, index) => (
-                                <tr key={transaction.pembelian_id} className="hover:bg-gray-50/50 transition-colors">
-                                    <td className="px-8 py-5 text-sm font-medium text-gray-900">{index + 1}</td>
-                                    <td className="px-8 py-5 text-sm font-bold text-gray-900">{transaction.user?.user_fullname}</td>
-                                    <td className="px-8 py-5 text-sm text-gray-500">{dayjs(transaction.pembelian_tanggal).format('MMM DD, YYYY')}</td>
-                                    <td className="px-8 py-5 text-sm font-bold text-gray-900">{formatCurrency(transaction.pembelian_total_harga)}</td>
+                                <tr key={transaction.pembelian_id} className="hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors">
+                                    <td className="px-8 py-5 text-sm font-medium text-gray-900 dark:text-white">{index + 1}</td>
+                                    <td className="px-8 py-5 text-sm font-bold text-gray-900 dark:text-white">{transaction.user?.user_fullname}</td>
+                                    <td className="px-8 py-5 text-sm text-gray-500 dark:text-gray-400">{dayjs(transaction.pembelian_tanggal).format('MMM DD, YYYY')}</td>
+                                    <td className="px-8 py-5 text-sm font-bold text-gray-900 dark:text-white">{formatCurrency(transaction.pembelian_total_harga)}</td>
                                     <td className="px-8 py-5">
-                                        <span className="text-[10px] font-black text-gray-700 bg-gray-100 px-2 py-1 rounded uppercase tracking-widest">
+                                        <span className="text-[10px] font-black text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/10 px-2 py-1 rounded uppercase tracking-widest">
                                             {transaction.metode_pembayaran?.metode_pembayaran_jenis}
                                         </span>
                                     </td>

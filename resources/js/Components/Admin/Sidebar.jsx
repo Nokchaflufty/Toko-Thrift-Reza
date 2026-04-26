@@ -1,9 +1,12 @@
 import { Link } from '@inertiajs/react';
+import { useLanguage } from '@/Utils/useLanguage';
 
 export default function Sidebar({ currentRoute = 'dashboard' }) {
+    const { t } = useLanguage();
+    
     const menuItems = [
         {
-            name: 'Dashboard',
+            name: t('Dashboard'),
             id: 'dashboard',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -12,7 +15,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
             )
         },
         {
-            name: 'Product',
+            name: t('Product'),
             id: 'product',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -21,7 +24,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
             )
         },
         {
-            name: 'Category',
+            name: t('Category'),
             id: 'category',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -31,7 +34,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
             )
         },
         {
-            name: 'Transaction',
+            name: t('Transaction'),
             id: 'transaction',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -40,7 +43,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
             )
         },
         {
-            name: 'Customers',
+            name: t('Customers'),
             id: 'customers',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -49,7 +52,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
             )
         },
         {
-            name: 'Settings',
+            name: t('Settings'),
             id: 'settings',
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -63,7 +66,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
         <aside className="w-64 bg-[#0a0a0a] text-white flex flex-col min-h-screen">
             {/* Logo Area */}
             <div className="px-6 py-8 border-b border-white/5">
-                <h1 className="text-xl font-black tracking-widest uppercase mb-1">THRIFT ADMIN</h1>
+                <h1 className="text-xl font-black tracking-widest uppercase mb-1">{t('THRIFT ADMIN')}</h1>
                 <p className="text-[10px] font-semibold tracking-widest text-gray-500 uppercase">V0.1-STREETWEAR</p>
             </div>
 
@@ -73,7 +76,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
                     const isActive = currentRoute === item.id;
                     return (
                         <Link
-                            key={item.name}
+                            key={item.id}
                             href={
                                 item.id === 'dashboard' ? route('admin.dashboard') : 
                                 item.id === 'product' ? route('admin.product.index') : 
@@ -106,7 +109,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 mr-2">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                     </svg>
-                    Log Out
+                    {t('Log Out')}
                 </Link>
             </div>
         </aside>

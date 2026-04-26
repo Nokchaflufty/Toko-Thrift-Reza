@@ -3,7 +3,7 @@ import Navbar from '@/Components/Admin/Navbar';
 
 export default function AdminLayout({ children, currentRoute = 'dashboard', showSearch = true }) {
     return (
-        <div className="flex h-screen bg-white overflow-hidden font-sans">
+        <div className="flex h-screen bg-white dark:bg-black overflow-hidden font-sans transition-colors duration-300">
             {/* Sidebar */}
             <Sidebar currentRoute={currentRoute} />
 
@@ -13,7 +13,7 @@ export default function AdminLayout({ children, currentRoute = 'dashboard', show
                 <Navbar showSearch={showSearch} />
 
                 {/* Main Scrollable Content */}
-                <main className="flex-1 p-8 bg-gray-50 overflow-y-auto">
+                <main className="flex-1 p-8 bg-gray-50 dark:bg-[#050505] overflow-y-auto transition-colors duration-300">
                     <div className="max-w-7xl mx-auto">
                         {children}
                     </div>
