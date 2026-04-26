@@ -27,14 +27,14 @@ export default function Login({ status, canResetPassword }) {
 
             {/* Left Side - Image Background */}
             <div className="relative hidden w-1/2 bg-slate-900 md:block">
-                <img 
-                    src="/images/login-bg.png" 
-                    alt="Fashion model" 
+                <img
+                    src="/images/login-bg.png"
+                    alt="Fashion model"
                     className="absolute inset-0 h-full w-full object-cover"
                 />
                 {/* Gradient overlay for text readability */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                
+
                 <div className="absolute bottom-16 left-16 text-white">
                     <p className="mb-4 text-sm font-bold tracking-widest uppercase text-white/90">Est. 2024</p>
                     <h1 className="text-5xl font-extrabold leading-[1.1] tracking-tight uppercase">
@@ -46,6 +46,14 @@ export default function Login({ status, canResetPassword }) {
             {/* Right Side - Form */}
             <div className="flex w-full items-center justify-center p-8 md:w-1/2 lg:p-24">
                 <div className="w-full max-w-md">
+                    {/* Back Button */}
+                    <Link href="/" className="mb-8 flex items-center text-xs font-bold uppercase tracking-widest text-gray-500 transition hover:text-black">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="mr-2 h-3.5 w-3.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                        </svg>
+                        Back to Home
+                    </Link>
+
                     {/* Top Label */}
                     <div className="mb-10">
                         <span className="text-sm font-bold tracking-widest uppercase text-black">Curated</span>
@@ -92,7 +100,7 @@ export default function Login({ status, canResetPassword }) {
                                     </Link>
                                 )}
                             </div>
-                            
+
                             <div className="relative">
                                 <TextInput
                                     id="password"
@@ -105,7 +113,7 @@ export default function Login({ status, canResetPassword }) {
                                     onChange={(e) => setData('password', e.target.value)}
                                 />
                                 {/* Eye icon toggle */}
-                                <div 
+                                <div
                                     className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700 p-1"
                                     onClick={() => setShowPassword(!showPassword)}
                                 >
@@ -115,8 +123,8 @@ export default function Login({ status, canResetPassword }) {
                                         </svg>
                                     ) : (
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
-                                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                     )}
                                 </div>
@@ -141,7 +149,7 @@ export default function Login({ status, canResetPassword }) {
                         >
                             Login
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="ml-2 h-4 w-4">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                             </svg>
                         </button>
                     </form>

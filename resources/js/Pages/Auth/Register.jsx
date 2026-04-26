@@ -54,6 +54,14 @@ export default function Register() {
             {/* Right Side - Form */}
             <div className="flex w-full items-center justify-center p-8 md:w-1/2 lg:p-24">
                 <div className="w-full max-w-md">
+                    {/* Back Button */}
+                    <Link href="/" className="mb-8 flex items-center text-xs font-bold uppercase tracking-widest text-gray-500 transition hover:text-black">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="mr-2 h-3.5 w-3.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                        </svg>
+                        Back to Home
+                    </Link>
+
                     <h2 className="mb-2 text-3xl font-bold text-gray-900">Create Account</h2>
                     <p className="mb-10 text-sm text-gray-600">
                         Join the Toko Thrift Malang community

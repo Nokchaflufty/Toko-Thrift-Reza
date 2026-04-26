@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
 
         $url = Auth::user()->user_level === 'Admin' 
             ? route('admin.dashboard', absolute: false) 
-            : route('dashboard', absolute: false);
+            : '/';
 
         return redirect()->intended($url);
     }

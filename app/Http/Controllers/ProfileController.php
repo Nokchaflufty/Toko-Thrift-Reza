@@ -29,15 +29,37 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Explicitly set each field to guarantee they are saved
+        $user->user_fullname = $request->input('user_fullname');
+        $user->user_email    = $request->input('user_email');
+        $user->user_nohp     = $request->input('user_nohp');
+        $user->user_alamat   = $request->input('user_alamat');
+
+        if ($request->hasFile('user_profil')) {
+            $file     = $request->file('user_profil');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads/profiles'), $filename);
+
+            // Delete old file if it exists and is a local upload
+            if ($user->user_profil_url && str_starts_with($user->user_profil_url, '/uploads/')) {
+                $oldPath = public_path($user->user_profil_url);
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
+            }
+
+            $user->user_profil_url = '/uploads/profiles/' . $filename;
         }
 
-        $request->user()->save();
+        if ($user->isDirty('user_email')) {
+            $user->email_verified_at = null;
+        }
 
-        return Redirect::route('profile.edit');
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
