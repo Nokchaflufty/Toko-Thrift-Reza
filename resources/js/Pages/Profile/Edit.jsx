@@ -73,19 +73,27 @@ export default function Edit({ mustVerifyEmail, status }) {
                             <p className="sidebar-subtitle">Manage your profile & preferences</p>
                         </div>
                         <nav className="profile-nav">
-                            <button className="nav-item active">
+                            <button className="nav-item active" type="button">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="nav-icon">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                                 Personal Info
                             </button>
-                            <Link href="/katalog" className="nav-item">
+                            <Link href="/profile/purchases" className="nav-item">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="nav-icon">
+                                    <path d="M6 2h12l3 6v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8l3-6Z"></path>
+                                    <path d="M3 8h18"></path>
+                                    <path d="M16 12a4 4 0 0 1-8 0"></path>
+                                </svg>
+                                Riwayat Pembelian
+                            </Link>
+                            <button onClick={() => window.history.back()} className="nav-item">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="nav-icon">
                                     <polyline points="15 18 9 12 15 6"></polyline>
                                 </svg>
                                 Kembali
-                            </Link>
+                            </button>
                         </nav>
                     </aside>
 

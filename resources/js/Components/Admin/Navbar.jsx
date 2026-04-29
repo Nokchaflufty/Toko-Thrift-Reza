@@ -2,7 +2,7 @@ import { usePage, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/Utils/useLanguage';
 
-export default function Navbar({ showSearch = true }) {
+export default function Navbar({ showSearch = true, onMenuToggle }) {
     const { auth } = usePage().props;
     const user = auth.user;
     const [search, setSearch] = useState('');
@@ -47,10 +47,22 @@ export default function Navbar({ showSearch = true }) {
     };
 
     return (
-        <header className="bg-white dark:bg-[#0a0a0a] border-b border-gray-200 dark:border-white/5 h-20 flex items-center justify-between px-8 transition-all duration-300">
+        <header className="bg-white dark:bg-[#0a0a0a] border-b border-gray-200 dark:border-white/5 h-20 flex items-center justify-between px-4 md:px-8 transition-all duration-300">
             {/* Search */}
-            {showSearch ? (
-                <div className="w-96 relative">
+            <div className="flex items-center gap-3 min-w-0">
+                <button
+                    type="button"
+                    onClick={onMenuToggle}
+                    className="md:hidden text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg"
+                    aria-label="Toggle menu"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+
+                {showSearch ? (
+                    <div className="w-56 sm:w-80 md:w-96 relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -65,12 +77,13 @@ export default function Navbar({ showSearch = true }) {
                         className="w-full pl-11 pr-4 py-2.5 bg-gray-100 dark:bg-white/5 border-transparent rounded-lg text-sm focus:border-gray-300 dark:focus:border-white/20 dark:text-white focus:bg-white dark:focus:bg-black focus:ring-0 transition"
                     />
                 </div>
-            ) : (
-                <div className="w-96"></div>
-            )}
+                ) : (
+                    <div className="w-56 sm:w-80 md:w-96"></div>
+                )}
+            </div>
 
             {/* Right Side Icons & Profile */}
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3 md:space-x-6">
                 <button 
                     onClick={toggleTheme}
                     className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg"
@@ -125,7 +138,9 @@ export default function Navbar({ showSearch = true }) {
                             </svg>
                         )}
                     </div>
-                    <span className="font-bold">{user?.user_fullname || 'Store Admin'}</span>
+                    <span className="font-bold hidden sm:inline">
+                        {user?.user_fullname || 'Store Admin'}
+                    </span>
                 </button>
             </div>
         </header>

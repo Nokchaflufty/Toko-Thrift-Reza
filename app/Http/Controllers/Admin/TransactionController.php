@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pembelian;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TransactionController extends Controller
 {
+    private const STATUSES = ['Processing', 'Completed', 'Refund'];
+
     public function index(Request $request)
     {
         $query = Pembelian::with(['user', 'metodePembayaran']);
@@ -49,5 +52,19 @@ class TransactionController extends Controller
                 'refund' => $refundCount,
             ]
         ]);
+    }
+
+    public function updateStatus(Request $request, int $id): RedirectResponse
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:' . implode(',', self::STATUSES)],
+        ]);
+
+        $trx = Pembelian::where('pembelian_id', $id)->firstOrFail();
+        $trx->update([
+            'pembelian_status' => $data['status'],
+        ]);
+
+        return redirect()->back()->with('success', 'Status transaksi berhasil diubah.');
     }
 }

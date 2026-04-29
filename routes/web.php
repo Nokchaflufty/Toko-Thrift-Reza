@@ -28,15 +28,20 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/purchases', [ProfileController::class, 'purchases'])->name('profile.purchases');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
     Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 });
 
 use App\Http\Controllers\Admin\ProductController;
@@ -64,6 +69,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::delete('/category/{id}', [CategoryController::class, 'destroy'])->name('admin.category.destroy');
 
     Route::get('/transaction', [TransactionController::class, 'index'])->name('admin.transaction.index');
+    Route::patch('/transaction/{id}/status', [TransactionController::class, 'updateStatus'])->name('admin.transaction.status');
     
     Route::get('/customer', [CustomerController::class, 'index'])->name('admin.customer.index');
 

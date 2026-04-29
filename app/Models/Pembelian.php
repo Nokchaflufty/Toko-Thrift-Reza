@@ -27,4 +27,9 @@ class Pembelian extends Model
     {
         return $this->belongsTo(MetodePembayaran::class, 'pembelian_metode_pembayaran_id', 'metode_pembayaran_id');
     }
+
+    public function details()
+    {
+        return $this->hasMany(PembelianDetail::class, 'pembelian_detail_pembelian_id', 'pembelian_id');
+    }
 }

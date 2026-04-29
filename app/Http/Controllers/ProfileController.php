@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Pembelian;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,53 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+        ]);
+    }
+
+    public function purchases(Request $request): Response
+    {
+        $userId = (int) $request->user()->user_id;
+
+        $orders = Pembelian::with([
+            'metodePembayaran',
+            'details.pakaian',
+        ])
+            ->where('pembelian_user_id', $userId)
+            ->orderByDesc('pembelian_tanggal')
+            ->get()
+            ->map(function ($order) {
+                $items = $order->details->map(function ($d) {
+                    $p = $d->pakaian;
+
+                    return [
+                        'id' => (int) $d->pembelian_detail_id,
+                        'qty' => (int) $d->pembelian_detail_jumlah,
+                        'line_total' => (int) $d->pembelian_detail_total_harga,
+                        'product' => $p ? [
+                            'id' => (int) $p->pakaian_id,
+                            'name' => $p->pakaian_nama,
+                            'price' => (int) $p->pakaian_harga,
+                            'image' => $p->pakaian_gambar_url,
+                        ] : null,
+                    ];
+                });
+
+                return [
+                    'id' => (int) $order->pembelian_id,
+                    'date' => $order->pembelian_tanggal,
+                    'status' => $order->pembelian_status,
+                    'total' => (int) $order->pembelian_total_harga,
+                    'payment' => $order->metodePembayaran ? [
+                        'id' => (int) $order->metodePembayaran->metode_pembayaran_id,
+                        'type' => $order->metodePembayaran->metode_pembayaran_jenis,
+                        'number' => $order->metodePembayaran->metode_pembayaran_nomor,
+                    ] : null,
+                    'items' => $items,
+                ];
+            });
+
+        return Inertia::render('Profile/Purchases', [
+            'orders' => $orders,
         ]);
     }
 

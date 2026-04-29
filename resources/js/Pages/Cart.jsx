@@ -137,9 +137,14 @@ export default function Cart({ cartItems, subtotal }) {
                                     </span>
                                 </div>
 
-                                <button className="checkout-btn" disabled={items.length === 0}>
+                                <Link
+                                    href="/checkout"
+                                    className={`checkout-btn ${items.length === 0 ? 'disabled' : ''}`}
+                                    disabled={items.length === 0}
+                                    as={items.length === 0 ? 'button' : 'a'}
+                                >
                                     Lanjut ke Checkout
-                                </button>
+                                </Link>
                                 
                                 <p className="secure-checkout-text">
                                     SECURE CHECKOUT BY THRIFTED BOUTIQUE

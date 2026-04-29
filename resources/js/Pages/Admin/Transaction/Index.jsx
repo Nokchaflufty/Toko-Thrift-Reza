@@ -1,16 +1,35 @@
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLanguage } from '@/Utils/useLanguage';
 import dayjs from 'dayjs';
 
 export default function Index({ transactions, stats, filters }) {
     const { t } = useLanguage();
+    const STATUS_OPTIONS = useMemo(
+        () => [
+            { value: 'Processing', label: 'Processing' },
+            { value: 'Completed', label: 'Completed' },
+            { value: 'Refund', label: 'Refund' },
+        ],
+        [],
+    );
+
     const [activeFilters, setActiveFilters] = useState({
         date: filters.date || '',
         month: filters.month || '',
         year: filters.year || '',
     });
+
+    const [rowStatus, setRowStatus] = useState(() => {
+        const map = {};
+        (transactions?.data || []).forEach((trx) => {
+            map[trx.pembelian_id] = trx.pembelian_status;
+        });
+        return map;
+    });
+
+    const [savingId, setSavingId] = useState(null);
 
     const handleFilterChange = (key, value) => {
         const newFilters = { ...activeFilters, [key]: value };
@@ -19,6 +38,18 @@ export default function Index({ transactions, stats, filters }) {
             preserveState: true,
             replace: true,
         });
+    };
+
+    const saveStatus = (id) => {
+        setSavingId(id);
+        router.patch(
+            route('admin.transaction.status', id),
+            { status: rowStatus[id] },
+            {
+                preserveScroll: true,
+                onFinish: () => setSavingId(null),
+            },
+        );
     };
 
     const getStatusStyle = (status) => {
@@ -35,11 +66,11 @@ export default function Index({ transactions, stats, filters }) {
     };
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(amount);
+        const n = Number(amount || 0);
+        return `Rp${new Intl.NumberFormat('id-ID', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        }).format(n)}`;
     };
 
     return (
@@ -176,11 +207,32 @@ export default function Index({ transactions, stats, filters }) {
                                             </span>
                                         </td>
                                         <td className="px-6 py-5 text-right">
-                                            <button className="text-gray-400 hover:text-gray-600 transition-colors">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                                                </svg>
-                                            </button>
+                                            <div className="flex items-center justify-end gap-2">
+                                                <select
+                                                    value={rowStatus[transaction.pembelian_id] || transaction.pembelian_status}
+                                                    onChange={(e) =>
+                                                        setRowStatus((prev) => ({
+                                                            ...prev,
+                                                            [transaction.pembelian_id]: e.target.value,
+                                                        }))
+                                                    }
+                                                    className="text-xs font-bold rounded-lg border border-gray-200 bg-white px-2 py-2 focus:ring-0 dark:bg-black dark:text-white dark:border-white/10"
+                                                >
+                                                    {STATUS_OPTIONS.map((opt) => (
+                                                        <option key={opt.value} value={opt.value} className="dark:bg-black">
+                                                            {opt.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => saveStatus(transaction.pembelian_id)}
+                                                    disabled={savingId === transaction.pembelian_id}
+                                                    className="text-xs font-extrabold rounded-lg px-3 py-2 border border-gray-200 bg-white hover:bg-gray-50 transition disabled:opacity-60 dark:bg-black dark:text-white dark:border-white/10 dark:hover:bg-white/5"
+                                                >
+                                                    {savingId === transaction.pembelian_id ? 'Saving...' : 'Update'}
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 );

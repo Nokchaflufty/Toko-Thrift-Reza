@@ -1,7 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { useLanguage } from '@/Utils/useLanguage';
 
-export default function Sidebar({ currentRoute = 'dashboard' }) {
+export default function Sidebar({ currentRoute = 'dashboard', onNavigate, onClose }) {
     const { t } = useLanguage();
     
     const menuItems = [
@@ -65,9 +65,21 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
     return (
         <aside className="w-64 bg-[#0a0a0a] text-white flex flex-col min-h-screen">
             {/* Logo Area */}
-            <div className="px-6 py-8 border-b border-white/5">
-                <h1 className="text-xl font-black tracking-widest uppercase mb-1">{t('THRIFT ADMIN')}</h1>
-                <p className="text-[10px] font-semibold tracking-widest text-gray-500 uppercase">V0.1-STREETWEAR</p>
+            <div className="px-6 py-6 border-b border-white/5 flex items-start justify-between gap-4">
+                <div>
+                    <h1 className="text-xl font-black tracking-widest uppercase mb-1">{t('THRIFT ADMIN')}</h1>
+                    <p className="text-[10px] font-semibold tracking-widest text-gray-500 uppercase">V0.1-STREETWEAR</p>
+                </div>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="md:hidden text-white/70 hover:text-white transition p-2 -mr-2 rounded-lg hover:bg-white/5"
+                    aria-label="Close menu"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
 
             {/* Navigation */}
@@ -85,6 +97,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
                                 item.id === 'customers' ? route('admin.customer.index') : 
                                 item.id === 'settings' ? route('admin.settings') : '#'
                             }
+                            onClick={onNavigate}
                             className={`flex items-center px-6 py-3.5 text-sm font-medium transition-colors ${
                                 isActive 
                                     ? 'bg-[#1a1a1a] text-white border-l-4 border-white' 
@@ -104,6 +117,7 @@ export default function Sidebar({ currentRoute = 'dashboard' }) {
                     href={route('logout')} 
                     method="post" 
                     as="button"
+                    onClick={onNavigate}
                     className="w-full flex items-center justify-center bg-white text-black px-4 py-3 rounded-md font-bold text-sm transition hover:bg-gray-200"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 mr-2">
