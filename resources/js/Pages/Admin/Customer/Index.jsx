@@ -90,7 +90,11 @@ export default function Index({ users, stats, filters }) {
                                                     alt={user.user_fullname}
                                                     className="w-full h-full object-cover"
                                                 />
-                                                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-black rounded-full"></span>
+                                                <span
+                                                    className={`absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-white dark:border-black rounded-full ${
+                                                        user.is_online ? 'bg-green-500' : 'bg-gray-400'
+                                                    }`}
+                                                ></span>
                                             </div>
                                             <div>
                                                 <p className="text-sm font-bold text-gray-900 dark:text-white leading-none uppercase">{user.user_fullname}</p>
@@ -107,9 +111,15 @@ export default function Index({ users, stats, filters }) {
                                         </span>
                                     </td>
                                     <td className="px-6 py-5">
-                                        <span className="inline-flex items-center px-2.5 py-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-[10px] font-bold rounded-full uppercase tracking-wider">
-                                            Active
-                                        </span>
+                                        {user.is_online ? (
+                                            <span className="inline-flex items-center px-2.5 py-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-[10px] font-bold rounded-full uppercase tracking-wider">
+                                                Active
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center px-2.5 py-1 bg-gray-50 dark:bg-white/5 text-gray-400 dark:text-gray-500 text-[10px] font-bold rounded-full uppercase tracking-wider">
+                                                Offline
+                                            </span>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

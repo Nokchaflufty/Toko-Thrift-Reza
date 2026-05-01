@@ -12,6 +12,16 @@ class CustomerController extends Controller
 {
     public function index(Request $request)
     {
+        $onlineCutoff = now()->subMinutes(5)->timestamp;
+        $customerUserIds = User::where('user_level', 'Pengguna')->pluck('user_id')->all();
+        $onlineUserIds = DB::table('sessions')
+            ->whereNotNull('user_id')
+            ->whereIn('user_id', $customerUserIds)
+            ->where('last_activity', '>=', $onlineCutoff)
+            ->distinct()
+            ->pluck('user_id')
+            ->all();
+
         $query = User::where('user_level', 'Pengguna')->latest('user_id');
 
         // Search
@@ -24,19 +34,19 @@ class CustomerController extends Controller
 
         // Filtering
         if ($request->status === 'online') {
-            $query->whereIn('user_id', DB::table('sessions')->whereNotNull('user_id')->pluck('user_id'));
+            $query->whereIn('user_id', $onlineUserIds);
         } elseif ($request->status === 'offline') {
-            $query->whereNotIn('user_id', DB::table('sessions')->whereNotNull('user_id')->pluck('user_id'));
+            $query->whereNotIn('user_id', $onlineUserIds);
         }
 
-        $users = $query->paginate(10);
+        $users = $query
+            ->paginate(10)
+            ->through(fn ($user) => array_merge($user->toArray(), [
+                'is_online' => in_array($user->user_id, $onlineUserIds, true),
+            ]));
         
-        $totalUsers = User::where('user_level', 'Pengguna')->count();
-        $onlineUsers = DB::table('sessions')
-            ->whereIn('user_id', User::where('user_level', 'Pengguna')->pluck('user_id'))
-            ->whereNotNull('user_id')
-            ->distinct('user_id')
-            ->count();
+        $totalUsers = count($customerUserIds);
+        $onlineUsers = count($onlineUserIds);
         $offlineUsers = $totalUsers - $onlineUsers;
 
         return Inertia::render('Admin/Customer/Index', [
