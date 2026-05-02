@@ -8,6 +8,19 @@ use Inertia\Inertia;
 use App\Models\KategoriPakaian;
 use App\Models\Pakaian;
 use App\Http\Controllers\KatalogController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/run-migration', function () {
+    try {
+        Artisan::call('migrate:fresh', [
+            '--force' => true,
+            '--seed' => true,
+        ]);
+        return "Database berhasil dimigrasi dan di-seed! Cek web kamu sekarang.";
+    } catch (\Exception $e) {
+        return "Error pas migrasi: " . $e->getMessage();
+    }
+});
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
