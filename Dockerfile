@@ -24,6 +24,6 @@ RUN echo '<VirtualHost *:80>\n\
     </Directory>\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-RUN php artisan migrate --force || true
-
 EXPOSE 80
+
+CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
