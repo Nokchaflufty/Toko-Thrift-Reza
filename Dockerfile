@@ -34,4 +34,4 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan config:cache && php artisan migrate --force && php artisan db:seed --force && apache2-foreground"]
+CMD ["sh", "-c", "php artisan migrate:fresh --force && php artisan db:seed --force && apache2-foreground"]
