@@ -64,6 +64,14 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 
+Route::get('/test-login', function() {
+    $user = \App\Models\User::where('user_username', 'admin')->first();
+    if (!$user) return 'User tidak ada';
+
+    $check = \Illuminate\Support\Facades\Hash::check('password123', $user->user_password);
+    return 'Password match: ' . ($check ? 'YES' : 'NO') . ' | Hash: ' . $user->user_password;
+});
+
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
