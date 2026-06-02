@@ -8,6 +8,7 @@ use App\Models\MetodePembayaran;
 use App\Models\Pembelian;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,6 +28,8 @@ class DatabaseSeeder extends Seeder
                 'user_alamat' => 'Jl. Admin Malang No. 1',
                 'user_level' => 'Admin',
             ]);
+
+            Log::info('User created: ' . User::where('user_username', 'admin')->first()->user_password);
         }
 
         // Create default categories
