@@ -64,9 +64,12 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 
-Route::get('/test-session', function() {
-    $tables = \Illuminate\Support\Facades\DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'");
-    return collect($tables)->pluck('table_name');
+Route::get('/test-auth', function() {
+    $result = \Illuminate\Support\Facades\Auth::attempt([
+        'user_username' => 'admin',
+        'password' => 'password123'
+    ]);
+    return 'Auth attempt: ' . ($result ? 'SUCCESS' : 'FAILED');
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
