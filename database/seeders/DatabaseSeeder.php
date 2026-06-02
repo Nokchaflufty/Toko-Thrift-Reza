@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         if (!User::where('user_username', 'admin')->exists()) {
             User::create([
                 'user_username' => 'admin',
-                'user_password' => Hash::make('password123'),
+                'user_password' => 'password123',
                 'user_fullname' => 'Administrator',
                 'user_email' => 'admin@tokothrift.com',
                 'user_nohp' => '081234567890',
